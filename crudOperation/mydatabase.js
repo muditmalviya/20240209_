@@ -1,26 +1,25 @@
-// Description: File I/O operations using Node.js
 const fs = require('fs');
 const path = require('path');
 
 /**
  * Function to check if a directory exists
- * @param {String} directoryPath
- * @return {Boolean}
-*/
-function directoryExists(directoryPath) {
+ * @param {String} dirPath - The path of the directory to check.
+ * @return {Boolean} - Returns true if the directory exists, false otherwise.
+ */
+function checkDirectoryExists(dirPath) {
   try {
-    return fs.statSync(directoryPath).isDirectory();
+    return fs.statSync(dirPath).isDirectory();
   } catch (err) {
     return false;
   }
 }
 
 /**
- * Function to check if file exists
- * @param {String} filePath 
- * @returns {Boolean}
+ * Function to check if a file exists
+ * @param {String} filePath - The path of the file to check.
+ * @returns {Boolean} - Returns true if the file exists, false otherwise.
  */
-function fileExists(filePath) {
+function checkFileExists(filePath) {
   try {
     return fs.statSync(filePath).isFile();
   } catch (err) {
@@ -30,18 +29,18 @@ function fileExists(filePath) {
 
 /**
  * Function to create a directory
- * @param {String} directoryPath 
+ * @param {String} dirPath - The path of the directory to create.
  * @returns {void}
  */
-function createDirectory(directoryPath) {
-  if (directoryExists(directoryPath)) {
-    console.log(`Directory '${directoryPath}' already exists.`);
+function createNewDirectory(dirPath) {
+  if (checkDirectoryExists(dirPath)) {
+    console.log(`Directory '${dirPath}' already exists.`);
   } else {
-    fs.mkdir(directoryPath, { recursive: true }, (err) => {
+    fs.mkdir(dirPath, { recursive: true }, (err) => {
       if (err) {
         console.error(`Error creating directory: ${err}`);
       } else {
-        console.log(`Directory '${directoryPath}' created successfully.`);
+        console.log(`Directory '${dirPath}' created successfully.`);
       }
     });
   }
@@ -49,14 +48,14 @@ function createDirectory(directoryPath) {
 
 /**
  * Function to create an empty file inside a directory
- * @param {String} directoryPath 
- * @param {String} fileName 
+ * @param {String} dirPath - The path of the directory where the file will be created.
+ * @param {String} fileName - The name of the file to create.
  * @returns {void}
  */
-function createFile(directoryPath, fileName) {
-  const filePath = path.join(directoryPath, fileName);
-  if (fileExists(filePath)) {
-    console.log(`File '${fileName}' already exists in directory '${directoryPath}'.`);
+function createNewFile(dirPath, fileName) {
+  const filePath = path.join(dirPath, fileName);
+  if (checkFileExists(filePath)) {
+    console.log(`File '${fileName}' already exists in directory '${dirPath}'.`);
   } else {
     fs.open(filePath, 'w', (err, fd) => {
       if (err) {
@@ -66,7 +65,7 @@ function createFile(directoryPath, fileName) {
           if (err) {
             console.error(`Error closing file: ${err}`);
           } else {
-            console.log(`Empty file '${fileName}' created successfully in directory '${directoryPath}`);
+            console.log(`Empty file '${fileName}' created successfully in directory '${dirPath}'.`);
           }
         });
       }
@@ -76,110 +75,103 @@ function createFile(directoryPath, fileName) {
 
 /**
  * Function to write content to a file
- * @param {String} directoryPath 
- * @param {String} fileName 
- * @param {String} fileContent 
+ * @param {String} dirPath - The path of the directory containing the file.
+ * @param {String} fileName - The name of the file to write content to.
+ * @param {String} fileContent - The content to write to the file.
  * @returns {void}
  */
-function writeFileContent(directoryPath, fileName, fileContent) {
-  const filePath = path.join(directoryPath, fileName);
-  if (fileExists(filePath)) {
+function writeContentToFile(dirPath, fileName, fileContent) {
+  const filePath = path.join(dirPath, fileName);
+  if (checkFileExists(filePath)) {
     fs.writeFile(filePath, fileContent, (err) => {
       if (err) {
         console.error(`Error writing content to file: ${err}`);
       } else {
-        console.log(`Content updated in file '${fileName}' successfully in directory '${directoryPath}`);
+        console.log(`Content updated in file '${fileName}' successfully in directory '${dirPath}'.`);
       }
     });
   } else {
-    console.log(`File '${fileName}' does not exist in directory '${directoryPath}'`);
+    console.log(`File '${fileName}' does not exist in directory '${dirPath}'.`);
   }
 }
 
-
-
 /**
- * Renames a file in the specified directory
- * @param {String} directoryPath 
+ * Function to rename a file in the specified directory
+ * @param {String} dirPath - The path of the directory containing the file.
+ * @param {String} oldFileName - The current name of the file.
+ * @param {String} newFileName - The new name for the file.
  */
-function UpdateFile(directoryPath, oldFileName, newFileName) {
+function renameFile(dirPath, oldFileName, newFileName) {
+  const oldFilePath = path.join(dirPath, oldFileName);
+  const newFilePath = path.join(dirPath, newFileName);
   if (oldFileName !== newFileName) {
-    const newFilePath = path.join(directoryPath, newFileName);
     fs.rename(oldFilePath, newFilePath, (err) => {
       if (err) {
         console.error(`Error renaming file: ${err}`);
       } else {
-        console.log(`File '${oldFileName}' renamed to '${newFileName}' successfully in directory '${directoryPath}'.`);
+        console.log(`File '${oldFileName}' renamed to '${newFileName}' successfully in directory '${dirPath}'.`);
       }
     });
   }
 }
 
-
-
-
 /**
- * Deletes a file from the specified directory
- * @param {String} directoryPath 
- * @param {String} fileName
- * return {void}
+ * Function to delete a file from the specified directory
+ * @param {String} dirPath - The path of the directory containing the file.
+ * @param {String} fileName - The name of the file to delete.
+ * @returns {void}
  */
-function deleteFile(directoryPath, fileName) {
-  const filePath = path.join(directoryPath, fileName);
-  if (fileExists(filePath)) {
+function deleteExistingFile(dirPath, fileName) {
+  const filePath = path.join(dirPath, fileName);
+  if (checkFileExists(filePath)) {
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error(`Error deleting file: ${err}`);
       } else {
-        console.log(`File '${fileName}' deleted successfully from directory '${directoryPath}'`);
+        console.log(`File '${fileName}' deleted successfully from directory '${dirPath}'.`);
       }
     });
   } else {
-    console.log(`File '${fileName}' does not exist in directory '${directoryPath}'`);
+    console.log(`File '${fileName}' does not exist in directory '${dirPath}'.`);
   }
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////////
 // Main
-const directoryPath = '/Users/UseR/Desktop/testDir/';
-const oldFileName = 'a.txt';
-const oldFileContent = 'Hello, this is my old file content!';
-const newFileName = 'updatedFile.txt';
-
+const targetDirectoryPath = '/Users/UseR/Desktop/testDir/';
+const oldFilename = 'mudit.txt';
+const oldFileContent = 'Hey, this is old file!';
+const newFilename = 'newfile.txt';
 
 // Operation to perform
-const operation = 'createDirectory';
-
+const operation = 'createNewDirectory';
 
 switch (operation) {
-  case 'createDirectory':
-    if (!directoryExists(directoryPath)) {
-      createDirectory(directoryPath);
+  case 'createNewDirectory':
+    if (!checkDirectoryExists(targetDirectoryPath)) {
+      createNewDirectory(targetDirectoryPath);
     }
     break;
 
-  case 'createFile':
-    const oldFilePath = path.join(directoryPath, oldFileName);
-    if (!fileExists(oldFilePath)) {
-      createFile('/Users/UseR/Desktop/testDir/', 'a.txt');
+  case 'createNewFile':
+    const oldFilePath = path.join(targetDirectoryPath, oldFilename);
+    if (!checkFileExists(oldFilePath)) {
+      createNewFile(targetDirectoryPath, oldFilename);
     }
     break;
 
-  case 'writeFileContent':
-    writeFileContent(directoryPath, oldFileName, oldFileContent);
+  case 'writeContentToFile':
+    writeContentToFile(targetDirectoryPath, oldFilename, oldFileContent);
     break;
 
-  case 'updateFileName':
-    UpdateFile(directoryPath, oldFileName, newFileName);
+  case 'renameFile':
+    renameFile(targetDirectoryPath, oldFilename, newFilename);
     break;
 
-  case 'deleteFile':
-    deleteFile(directoryPath, newFileName);
+  case 'deleteExistingFile':
+    deleteExistingFile(targetDirectoryPath, newFilename);
     break;
 
   default:
-    console.log('Invalid operation.');
+    console.log('Invalid operation.');
 }
