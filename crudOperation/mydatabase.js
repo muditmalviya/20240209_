@@ -311,5 +311,5 @@ updateJSONData(path.join(pathoftheFolder, fileName), uniqueKey, newData)
 //deleteFolder(pathoftheFolder)
 //deleteFolder(updatedFolderPath)
 
-const uniqueKeyToDelete = 3; // ID of the record to delete
-deleteJSONRecord(path.join(pathoftheFolder, fileName), uniqueKeyToDelete);
+//const uniqueKeyToDelete = 3; // ID of the record to delete
+//deleteJSONRecord(path.join(pathoftheFolder, fileName), uniqueKeyToDelete);
